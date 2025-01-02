@@ -111,7 +111,7 @@ app.post("/upload", photosMiddleware.array("photos", 100), async (req, res) => {
     const ext = parts[parts.length - 1];
     const newPath = path + "." + ext;
     fs.renameSync(path, newPath);
-    uploadedFiles.push(newPath.replace("uploads/", ""));
+    // uploadedFiles.push(newPath.replace("uploads/", ""));
   }
   res.json(uploadedFiles);
 });
@@ -131,26 +131,35 @@ app.post("/places", (req, res) => {
     checkOut,
     maxGuests,
   } = req.body;
+
   jwt.verify(token, jwtSecret, {}, async (err, userData) => {
-    if (err) throw err;
-    const placeDoc = await Place.create({
-      owner: userData.id,
-      price,
-      title,
-      address,
-      photos: addedPhotos,
-      description,
-      perks,
-      extraInfo,
-      checkIn,
-      checkOut,
-      maxGuests,
-    });
-    res.json(placeDoc);
+    if (err) return res.status(401).json({ error: "Invalid token" });
+
+    try {
+      const placeDoc = await Place.create({
+        owner: userData.id,
+        price,
+        title,
+        address,
+        photos: addedPhotos, // Ensure this matches the schema
+        description,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        maxGuests,
+      });
+
+      res.json(placeDoc);
+    } catch (error) {
+      console.error("Error saving place:", error);
+      res.status(500).json({ error: "Database save failed" });
+    }
   });
 });
 
-app.get("/places", (req, res) => {
+
+app.get("/user-places", (req, res) => {
   mongoose.connect(process.env.MONGO_URL);
   const { token } = req.cookies;
   jwt.verify(token, jwtSecret, {}, async (err, userData) => {

@@ -8,7 +8,7 @@ function PlacesPage() {
   const [places, setPlaces] = useState([]);
 
   useEffect(() => {
-    axios.get("/places").then(({ data }) => {
+    axios.get("/user-places").then(({ data }) => {
       setPlaces(data);
     });
   }, []);
@@ -46,9 +46,9 @@ function PlacesPage() {
               to={"/account/places/" + place._id}
               className="flex cursor-pointer gap-4 bg-gray-100 p-2 rounded-2xl"
             >
-              <div className="w-32 h-32 bg-gray-300 grow shrink-0">
+              <div className=" flex w-32 h-32 bg-gray-300 grow shrink-0">
                 {place.photos.length > 0 && (
-                  <img src={place.photos[0]} alt="" />
+                  <img className="object-cover" src={"http://localhost:3000/" + place.photos[0]} alt="" />
                 )}
               </div>
               <div className="grow-0 shrink">
