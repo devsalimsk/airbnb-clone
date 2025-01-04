@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("./models/User.js");
 const Place = require("./models/Place.js");
+const Booking = require("./models/Booking.js");
 const cookieParser = require("cookie-parser");
 const imageDownloader = require("image-downloader");
 const multer = require("multer");
@@ -27,6 +28,14 @@ app.use(
   })
 );
 
+function getUserDataFromReq(req) {
+  return new Promise((resolve, reject) => {
+    jwt.verify(req.cookies.token, jwtSecret, {}, async (err, userData) => {
+      if (err) throw err;
+      resolve(userData);
+    });
+  });
+}
 mongoose.connect(process.env.MONGO_URL);
 
 // Test Route
@@ -52,25 +61,30 @@ app.post("/register", async (req, res) => {
 });
 
 // Login Route
-app.post('/login', async (req,res) => {
+app.post("/login", async (req, res) => {
   mongoose.connect(process.env.MONGO_URL);
-  const {email,password} = req.body;
-  const userDoc = await User.findOne({email});
+  const { email, password } = req.body;
+  const userDoc = await User.findOne({ email });
   if (userDoc) {
     const passOk = bcrypt.compareSync(password, userDoc.password);
     if (passOk) {
-      jwt.sign({
-        email:userDoc.email,
-        id:userDoc._id
-      }, jwtSecret, {}, (err,token) => {
-        if (err) throw err;
-        res.cookie('token', token).json(userDoc);
-      });
+      jwt.sign(
+        {
+          email: userDoc.email,
+          id: userDoc._id,
+        },
+        jwtSecret,
+        {},
+        (err, token) => {
+          if (err) throw err;
+          res.cookie("token", token).json(userDoc);
+        }
+      );
     } else {
-      res.status(422).json('pass not ok');
+      res.status(422).json("pass not ok");
     }
   } else {
-    res.json('not found');
+    res.json("not found");
   }
 });
 
@@ -158,7 +172,6 @@ app.post("/places", (req, res) => {
   });
 });
 
-
 app.get("/user-places", (req, res) => {
   mongoose.connect(process.env.MONGO_URL);
   const { token } = req.cookies;
@@ -168,37 +181,85 @@ app.get("/user-places", (req, res) => {
   });
 });
 
-app.get('/places/:id', async (req,res) => {
+app.get("/places/:id", async (req, res) => {
   mongoose.connect(process.env.MONGO_URL);
-  const {id} = req.params;
+  const { id } = req.params;
   res.json(await Place.findById(id));
 });
 
-app.put('/places', async (req,res) => {
+app.put("/places", async (req, res) => {
   mongoose.connect(process.env.MONGO_URL);
-  const {token} = req.cookies;
+  const { token } = req.cookies;
   const {
-    id, title,address,addedPhotos,description,
-    perks,extraInfo,checkIn,checkOut,maxGuests,price,
+    id,
+    title,
+    address,
+    addedPhotos,
+    description,
+    perks,
+    extraInfo,
+    checkIn,
+    checkOut,
+    maxGuests,
+    price,
   } = req.body;
   jwt.verify(token, jwtSecret, {}, async (err, userData) => {
     if (err) throw err;
     const placeDoc = await Place.findById(id);
     if (userData.id === placeDoc.owner.toString()) {
       placeDoc.set({
-        title,address,photos:addedPhotos,description,
-        perks,extraInfo,checkIn,checkOut,maxGuests,price,
+        title,
+        address,
+        photos: addedPhotos,
+        description,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        maxGuests,
+        price,
       });
       await placeDoc.save();
-      res.json('ok');
+      res.json("ok");
     }
   });
 });
 
-app.get('/places', async (req,res) => {
+app.get("/places", async (req, res) => {
   mongoose.connect(process.env.MONGO_URL);
-  res.json( await Place.find() );
+  res.json(await Place.find());
 });
+
+app.post("/bookings", async (req, res) => {
+  mongoose.connect(process.env.MONGO_URL);
+  const userData = await getUserDataFromReq(req);
+  const { place, checkIn, checkOut, numberOfGuests, name, phone, price } =
+    req.body;
+  Booking.create({
+    place,
+    checkIn,
+    checkOut,
+    numberOfGuests,
+    name,
+    phone,
+    price,
+    user: userData.id,
+  })
+    .then((doc) => {
+      res.json(doc);
+    })
+    .catch((err) => {
+      throw err;
+    });
+});
+
+app.get('/bookings', async (req,res) => {
+  mongoose.connect(process.env.MONGO_URL);
+  const userData = await getUserDataFromReq(req);
+  res.json( await Booking.find({user:userData.id}).populate('place') );
+});
+
+
 // Start Server
 app.listen(3000, () => {
   console.log(`Server is listening on port http://localhost:${3000}`);
