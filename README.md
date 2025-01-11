@@ -53,7 +53,7 @@ A fully functional Airbnb-inspired platform built with the MERN (MongoDB, Expres
    - Create a `.env` file in the `backend` directory.
    - Add the following variables:
      ```env
-     PORT=5000
+     PORT=3000
      MONGO_URI=<your_mongo_connection_string>
      JWT_SECRET=<your_jwt_secret>
      CLOUDINARY_URL=<your_cloudinary_url_if_used>
