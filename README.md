@@ -115,13 +115,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 
-## Acknowledgments 💖
-
-- Inspired by Airbnb's platform design.
-- Special thanks to [OpenAI](https://openai.com) for assistance in project ideation.
-
----
-
 ## Connect with Me 👨‍💻
 
 - **LinkedIn**: [Salim's Profile](https://www.linkedin.com/in/salimthedeveloper/)
