@@ -78,25 +78,7 @@ A fully functional Airbnb-inspired platform built with the MERN (MongoDB, Expres
 
 ---
 
-## Folder Structure 📂
 
-```
-/airbnb-clone
-├── backend
-│   ├── controllers
-│   ├── models
-│   ├── routes
-│   ├── middleware
-│   └── app.js
-├── frontend
-│   ├── components
-│   ├── pages
-│   ├── styles
-│   └── App.js
-└── README.md
-```
-
----
 
 ## Future Enhancements 🚀
 
