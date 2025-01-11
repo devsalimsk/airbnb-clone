@@ -124,8 +124,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Connect with Me 👨‍💻
 
-- **LinkedIn**: [Salim's Profile](https://www.linkedin.com/in/salim)
-- **GitHub**: [Salim's GitHub](https://github.com/<your-username>)
+- **LinkedIn**: [Salim's Profile](https://www.linkedin.com/in/salimthedeveloper/)
+- **GitHub**: [Salim's GitHub](https://github.com/devsalimsk)
 
 ---
 
