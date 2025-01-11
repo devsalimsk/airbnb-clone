@@ -131,5 +131,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 Feel free to suggest modifications or ask for clarification on any of the sections!
 ``` 
-
-Let me know if you’d like additional details or edits!
