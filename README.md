@@ -1,5 +1,3 @@
-Here’s a well-structured **README.md** template for your Airbnb clone project:  
-
 ```markdown
 # Airbnb Clone 🏠
 
